@@ -51,6 +51,25 @@ export default {
       font-size: 28px
       background-color: #ffffff
     }
+    > .content-wrapper {
+      padding: 10px
+    }
+  }
+
+  .card-task {
+    display: inline-block
+    .ant-card-head {
+      min-height: 40px
+      padding: 0 20px;
+      .ant-card-head-title {
+        padding: 10px 0
+      }
+    }
+    .ant-card-body {
+      overflow: auto
+      height: 180px
+      padding: 20px
+    }
   }
 
   button, html [type="button"], [type="reset"], [type="submit"] {

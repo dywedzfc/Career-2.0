@@ -1,0 +1,95 @@
+{
+  "dailyTask": [
+    {
+      "id": 1,
+      "date": "2018-08-10",
+      "content": [
+        {
+          "id": 100,
+          "projectName": "西宁网约车监管服务平台",
+          "projectTask": [
+            {"id": 1000, "taskName": "应急预案", "taskContent": "添加查询条件"},
+            {"id": 1001, "taskName": "营运里程异常分析", "taskContent": "添加修改异常数据"},
+            {"id": 1002, "taskName": "营运单次异常分析", "taskContent": "添加查询条件"}
+          ]
+        },
+        {
+          "id": 101,
+          "projectName": "西宁网约车监管服务平台",
+          "projectTask": [
+            {"id": 1003, "taskName": "营运信息监测总览", "taskContent": "添加修改异常数据"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "date": "2018-08-09",
+      "content": [
+        {
+          "id": 102,
+          "projectName": "西宁网约车监管服务平台",
+          "projectTask": [
+            {"id": 1004, "taskName": "应急预案", "taskContent": "添加查询条件"},
+            {"id": 1005, "taskName": "营运里程异常分析", "taskContent": "添加修改异常数据"}
+          ]
+        },
+        {
+          "id": 103,
+          "projectName": "杭州市出租汽车服务管理系统",
+          "projectTask": [
+            {"id": 1006, "taskName": "营运信息监测总览", "taskContent": "添加查询条件"},
+            {"id": 1007, "taskName": "信息发布", "taskContent": "添加修改异常数据"},
+            {"id": 1008, "taskName": "应急预案", "taskContent": "添加查询条件"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "date": "2018-08-08",
+      "content": [
+        {
+          "id": 104,
+          "projectName": "西宁网约车监管服务平台",
+          "projectTask": [
+            {"id": 1009, "taskName": "营运里程异常分析", "taskContent": "添加修改异常数据"}
+          ]
+        },
+        {
+         "id": 105,
+         "projectName": "杭州市出租汽车服务管理系统",
+         "projectTask": [
+            {"id": 1010, "taskName": "营运信息监测总览", "taskContent": "添加查询条件"},
+            {"id": 1011, "taskName": "信息发布", "taskContent": "添加修改异常数据"},
+            {"id": 1012, "taskName": "分区域交通", "taskContent": "添加修改异常数据"},
+            {"id": 1013, "taskName": "快速路监测", "taskContent": "添加修改异常数据"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "date": "2018-08-07",
+      "content": [
+        {
+          "id": 105,
+          "projectName": "西宁网约车监管服务平台",
+          "projectTask": [
+            {"id": 1014, "taskName": "营运里程异常分析", "taskContent": "添加修改异常数据"}
+          ]
+        },
+        {
+         "id": 106,
+         "projectName": "杭州市出租汽车服务管理系统",
+         "projectTask": [
+            {"id": 1015, "taskName": "营运信息监测总览", "taskContent": "添加查询条件"},
+            {"id": 1016, "taskName": "信息发布", "taskContent": "添加修改异常数据"},
+            {"id": 1017, "taskName": "分区域交通", "taskContent": "添加修改异常数据"},
+            {"id": 1018, "taskName": "快速路监测", "taskContent": "添加修改异常数据"}
+          ]
+        }
+      ]
+    }
+  ]
+}
