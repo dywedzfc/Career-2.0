@@ -18,26 +18,26 @@
       </a-form>
     </div>
     <div class="content-wrapper" ref="panelContent">
-      <a-card class="card-task" v-for="(item, index) in cardOption.data"
-              :title="item.date" :key="item.id"
-              :bordered="false"
-              :style="{width: calculatedWidth + 'px', marginRight: calculatedMarginRight(index), marginBottom: calculatedMarginBottom(index)}"
-      >
-        <dl class="projectList">
-          <template v-for="projectItem in item.content">
-            <dt class="projectName" :key="projectItem.id" v-text="projectItem.projectName"></dt>
-            <dd class="projectTaskItem" v-for="taskItem in projectItem.projectTask" :key="taskItem.id">
-              <span v-text="taskItem.taskName"></span>
-              <span v-text="taskItem.taskContent"></span>
-            </dd>
+        <a-card class="card-task" v-for="(item, index) in cardOption.data"
+                :title="item.date" :key="item.id"
+                :bordered="false"
+                :style="{width: calculatedWidth + 'px', marginRight: calculatedMarginRight(index), marginBottom: calculatedMarginBottom(index)}"
+        >
+          <dl class="projectList">
+            <template v-for="projectItem in item.content">
+              <dt class="projectName" :key="projectItem.id" v-text="projectItem.projectName"></dt>
+              <dd class="projectTaskItem" v-for="taskItem in projectItem.projectTask" :key="taskItem.id">
+                <span v-text="taskItem.taskName"></span>
+                <span v-text="taskItem.taskContent"></span>
+              </dd>
+            </template>
+          </dl>
+          <template class="ant-card-actions" slot="actions">
+            <a-icon type="setting" />
+            <a-icon type="edit" />
+            <a-icon type="caret-down" />
           </template>
-        </dl>
-        <template class="ant-card-actions" slot="actions">
-          <a-icon type="setting" />
-          <a-icon type="edit" />
-          <a-icon type="caret-down" />
-        </template>
-      </a-card>
+        </a-card>
     </div>
   </div>
 </template>
@@ -65,12 +65,6 @@ export default {
   },
   created () {
     this.$nextTick(() => {
-      setTimeout(() => {
-        const wrapperWidth = this.$refs.wrapper.offsetWidth
-        this.calculatedCardNumberOfLines()
-        console.info('created:', this.$refs.wrapper, wrapperWidth, this.cardOption.numberOfLines, this.cardWidth, this.cardOption.rows)
-        // return {width: (400 + (contentWidth % 400 / this.cardOption.numberOfLines) - 6)}
-      }, 0)
       window.onresize = () => {
         this.calculatedCardNumberOfLines()
       }
@@ -81,13 +75,13 @@ export default {
       axios.get('http://localhost:3049/dailyTask').then((res) => {
         console.info('dailyTask:', res)
         this.cardOption.data = res.data
-        this.cardOption.rows = Math.ceil(this.cardOption.data.length / this.cardOption.numberOfLines)
+        setTimeout(() => this.calculatedCardNumberOfLines(), 0)
       })
     })
   },
   computed: {
     calculatedWidth () {
-      if (this.cardOption.numberOfLines > 0) return (this.cardOption.totalWidth / this.cardOption.numberOfLines) - (10 * (this.cardOption.numberOfLines - 1) / this.cardOption.numberOfLines)
+      if (this.cardOption.numberOfLines > 0) return (this.cardOption.totalWidth / this.cardOption.numberOfLines) - (15 * (this.cardOption.numberOfLines - 1) / this.cardOption.numberOfLines)
       else return 400
     }
   },
@@ -102,24 +96,34 @@ export default {
           index !== 0 &&
           (index + 1) % this.cardOption.numberOfLines === 0
         )
-      ) {
-        marginRight = 0
-      } else {
-        marginRight = '10px'
-      }
+      ) marginRight = '-20px'
+      else marginRight = '15px'
       return marginRight
     },
     calculatedMarginBottom (index) {
       let marginBottom = 0
-      const lastLineCount = this.cardOption.data.length - Math.floor(this.cardOption.data.length % this.cardOption.numberOfLines)
-      console.info(lastLineCount, this.cardOption.data.length, Math.floor(this.cardOption.data.length % this.cardOption.numberOfLines))
-      if ((lastLineCount - 1) >= index) marginBottom = '10px'
-      // if (this.cardOption.data - Math.floor(this.cardOption.data % this.cardOption.numberOfLines)) marginBottom = '10px'
+      const length = this.cardOption.data.length
+      const rows = this.cardOption.rows
+      // const lastLineCount = length % rows
+      // console.info(lastLineCount, this.cardOption.data.length, index, this.cardOption.rows)
+      if (rows === 1 || (length === rows && index === rows)) {
+        console.info('calculatedMarginBottom-1:')
+      } else {
+        if (length % rows === 0) {
+          console.info('calculatedMarginBottom-2:')
+          if ((length - rows) > index) marginBottom = '15px'
+        } else {
+          console.info('calculatedMarginBottom-3:', length, rows, length % rows, length - (length % rows))
+          if (length - (length % rows) > index) marginBottom = '15px'
+        }
+      }
+      // console.info('calculatedMarginBottom:', index, rows, marginBottom)
       return marginBottom
     },
     calculatedCardNumberOfLines () {
-      const totalWidth = this.cardOption.totalWidth = this.$refs.panelContent.offsetWidth - 20
+      const totalWidth = this.cardOption.totalWidth = this.$refs.panelContent.offsetWidth - 30
       this.cardOption.numberOfLines = Math.floor(totalWidth / 400)
+      this.cardOption.rows = Math.ceil(this.cardOption.data.length / this.cardOption.numberOfLines)
     },
     handleDailyTaskSubmit (e) {
       e.preventDefault()
@@ -167,7 +171,8 @@ export default {
       }
     }
     .content-wrapper {
-      font-size: 0
+      overflow-y: auto
+      height: calc(100% - 106px)
       .projectList {
         .projectName {
           font-size: 18px

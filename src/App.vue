@@ -52,17 +52,19 @@ export default {
       background-color: #ffffff
     }
     > .content-wrapper {
-      padding: 10px
+      padding: 15px
     }
   }
 
   .card-task {
+    float: left;
     display: inline-block
     .ant-card-head {
       min-height: 40px
-      padding: 0 20px;
+      padding: 0 20px
       .ant-card-head-title {
         padding: 10px 0
+        font-size: 24px
       }
     }
     .ant-card-body {
