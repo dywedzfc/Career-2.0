@@ -7,10 +7,10 @@
           <a-checkbox @change="handleMonthPickerFlagChange" :checked="query.monthPickerFlag"></a-checkbox>
         </a-form-item>
         <a-form-item fieldDecoratorId="month">
-          <a-month-picker placeholder="月份" :disabled="!query.monthPickerFlag"/>
+          <a-month-picker placeholder="月份" :disabled="!query.monthPickerFlag" @change="handleMonthSelectChange"/>
         </a-form-item>
         <a-form-item>
-          <a-button type='primary' htmlType='submit'>查询</a-button>
+          <a-button type='primary' icon="sync" htmlType='submit'></a-button>
         </a-form-item>
         <a-form-item>
           <a-button type='primary' icon="plus"></a-button>
@@ -39,11 +39,20 @@
           </template>
         </a-card>
     </div>
+    <a-modal
+      :title="dialog.title"
+      :visible="dialog.display"
+      :confirmLoading="dialog.loading"
+      @ok="handleDialogSubmitClick"
+      @cancel="handleDialogCancelClick"
+    >
+      <p>ModalText</p>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import {Form, Input, DatePicker, Checkbox, Button, Icon, Card} from 'ant-design-vue'
+import {Form, Input, DatePicker, Checkbox, Button, Icon, Card, Modal} from 'ant-design-vue'
 import moment from 'moment'
 import axios from 'axios'
 export default {
@@ -60,6 +69,11 @@ export default {
         numberOfLines: 0,
         rows: 0,
         data: []
+      },
+      dialog: {
+        title: '',
+        display: false,
+        loading: false
       }
     }
   },
@@ -72,11 +86,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      axios.get('http://localhost:3049/dailyTask').then((res) => {
-        console.info('dailyTask:', res)
-        this.cardOption.data = res.data
-        setTimeout(() => this.calculatedCardNumberOfLines(), 0)
-      })
+      this.getDailyTaskList()
     })
   },
   computed: {
@@ -107,13 +117,10 @@ export default {
       // const lastLineCount = length % rows
       // console.info(lastLineCount, this.cardOption.data.length, index, this.cardOption.rows)
       if (rows === 1 || (length === rows && index === rows)) {
-        console.info('calculatedMarginBottom-1:')
       } else {
         if (length % rows === 0) {
-          console.info('calculatedMarginBottom-2:')
           if ((length - rows) > index) marginBottom = '15px'
         } else {
-          console.info('calculatedMarginBottom-3:', length, rows, length % rows, length - (length % rows))
           if (length - (length % rows) > index) marginBottom = '15px'
         }
       }
@@ -125,24 +132,42 @@ export default {
       this.cardOption.numberOfLines = Math.floor(totalWidth / 400)
       this.cardOption.rows = Math.ceil(this.cardOption.data.length / this.cardOption.numberOfLines)
     },
-    handleDailyTaskSubmit (e) {
-      e.preventDefault()
-      let query = {}
-      this.query.form.validateFields((error, values) => {
-        if (!error) {
-          console.log('Received values of form: ', values)
-          if (values.month) {
-            console.log('Received values of form-value: ', values.month._d)
-            query.MonthPicker = moment(values.month._d).format('YYYY-MM')
-            console.log('error', query)
-          }
+    getDailyTaskList () {
+      this.query.form.validateFields((err, values) => {
+        if (!err) {
+          let month = null
+          if (values.month) month = moment(values.month._d).format('YYYY-MM')
+          console.info('getDailyTaskList:', values, month)
+          axios.get('http://localhost:3049/dailyTask', {
+            params: {
+              date_like: month
+            }
+          }).then((res) => {
+            console.info('dailyTask:', res)
+            this.cardOption.data = res.data
+            setTimeout(() => this.calculatedCardNumberOfLines(), 0)
+          })
         }
       })
+    },
+    handleMonthSelectChange () {
+      console.info('handleMonthSelectCange:', this.query.form)
+      setTimeout(() => {
+        this.getDailyTaskList()
+      }, 0)
+    },
+    handleDailyTaskSubmit (e) {
+      e.preventDefault()
+      this.getDailyTaskList()
     },
     handleMonthPickerFlagChange (item) {
       console.info('handleMonthPickerFlagChange:', item.target.checked)
       this.query.monthPickerFlag = item.target.checked
-    }
+    },
+    handleDialogSubmitClick () {
+      this.getDailyTaskList()
+    },
+    handleDialogCancelClick () {}
   },
   components: {
     [Form.name]: Form,
@@ -153,7 +178,8 @@ export default {
     [Checkbox.name]: Checkbox,
     [Button.name]: Button,
     [Icon.name]: Icon,
-    [Card.name]: Card
+    [Card.name]: Card,
+    [Modal.name]: Modal
   }
 }
 </script>
