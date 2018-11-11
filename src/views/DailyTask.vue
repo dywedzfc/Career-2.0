@@ -49,15 +49,15 @@
         </transition>
         <div class="edit-panel-body">
           <a-input-group class="mp-input-combination" size="large" compact>
-            <a-select class="mp-input-project-name" defaultValue="Zhejiang">
-              <a-select-option value="Zhejiang">Zhejiang</a-select-option>
+            <a-select class="mp-input-project-name" v-model="dailyTaskForm[0].projectName" placeholder="项目名称">
+              <a-select-option value="杭州工程车运管平台">杭州工程车运管平台</a-select-option>
               <a-select-option value="Jiangsu">Jiangsu</a-select-option>
             </a-select>
-            <a-select class="mp-input-project-task" defaultValue="Zhejiang">
-              <a-select-option value="Zhejiang">Zhejiang</a-select-option>
+            <a-select class="mp-input-project-task" v-model="dailyTaskForm[0].projectTask" placeholder="项目任务">
+              <a-select-option value="实时监控">实时监控</a-select-option>
               <a-select-option value="Jiangsu">Jiangsu</a-select-option>
             </a-select>
-            <a-textarea class="mp-input-task-details" placeholder="Autosize height based on content lines" />
+            <a-textarea class="mp-input-task-details" v-model="dailyTaskForm[0].taskDetails" placeholder="任务详情"></a-textarea>
             <a-button size="large" icon="save"></a-button>
             <a-button size="large" icon="delete"></a-button>
           </a-input-group>
@@ -88,7 +88,15 @@ export default {
         data: []
       },
       showEdit: false,
-      showTitle: false
+      showTitle: false,
+      dailyTaskForm: [
+        {
+          gridId: 1,
+          projectName: '',
+          projectTask: '',
+          taskDetails: ''
+        }
+      ]
     }
   },
   created () {
