@@ -13,7 +13,7 @@
           <a-button type='primary' icon="sync" htmlType='submit'></a-button>
         </a-form-item>
         <a-form-item>
-          <a-button type='primary' icon="plus"></a-button>
+          <a-button type='primary' icon="plus" @click="handleAddDailyTaskClick"></a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -39,20 +39,37 @@
           </template>
         </a-card>
     </div>
-    <a-modal
-      :title="dialog.title"
-      :visible="dialog.display"
-      :confirmLoading="dialog.loading"
-      @ok="handleDialogSubmitClick"
-      @cancel="handleDialogCancelClick"
-    >
-      <p>ModalText</p>
-    </a-modal>
+    <transition name="edit-panel">
+      <div class="edit-panel" v-if="showEdit">
+        <transition name="edit-panel-title">
+          <div class="edit-panel-title" v-if="showTitle">
+            <a-icon class="btn-return" type="left" @click="handleReturnClick"/>
+            <span>添加每日任务</span>
+          </div>
+        </transition>
+        <div class="edit-panel-body">
+          <a-input-group class="mp-input-combination" size="large" compact>
+            <a-select class="mp-input-project-name" defaultValue="Zhejiang">
+              <a-select-option value="Zhejiang">Zhejiang</a-select-option>
+              <a-select-option value="Jiangsu">Jiangsu</a-select-option>
+            </a-select>
+            <a-select class="mp-input-project-task" defaultValue="Zhejiang">
+              <a-select-option value="Zhejiang">Zhejiang</a-select-option>
+              <a-select-option value="Jiangsu">Jiangsu</a-select-option>
+            </a-select>
+            <a-textarea class="mp-input-task-details" placeholder="Autosize height based on content lines" />
+            <a-button size="large" icon="save"></a-button>
+            <a-button size="large" icon="delete"></a-button>
+          </a-input-group>
+        </div>
+        <div class="edit-panel-footer"></div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import {Form, Input, DatePicker, Checkbox, Button, Icon, Card, Modal} from 'ant-design-vue'
+import {Form, Input, Select, DatePicker, Checkbox, Button, Icon, Card, Modal} from 'ant-design-vue'
 import moment from 'moment'
 import axios from 'axios'
 export default {
@@ -70,11 +87,8 @@ export default {
         rows: 0,
         data: []
       },
-      dialog: {
-        title: '',
-        display: false,
-        loading: false
-      }
+      showEdit: false,
+      showTitle: false
     }
   },
   created () {
@@ -160,6 +174,18 @@ export default {
       e.preventDefault()
       this.getDailyTaskList()
     },
+    handleAddDailyTaskClick () {
+      this.showEdit = true
+      setTimeout(() => {
+        this.showTitle = true
+      }, 300)
+    },
+    handleReturnClick () {
+      this.showTitle = false
+      setTimeout(() => {
+        this.showEdit = false
+      }, 400)
+    },
     handleMonthPickerFlagChange (item) {
       console.info('handleMonthPickerFlagChange:', item.target.checked)
       this.query.monthPickerFlag = item.target.checked
@@ -173,6 +199,10 @@ export default {
     [Form.name]: Form,
     [Form.Item.name]: Form.Item,
     [Input.name]: Input,
+    [Input.TextArea.name]: Input.TextArea,
+    [Input.Group.name]: Input.Group,
+    [Select.name]: Select,
+    [Select.Option.name]: Select.Option,
     [DatePicker.name]: DatePicker,
     [DatePicker.MonthPicker.name]: DatePicker.MonthPicker,
     [Checkbox.name]: Checkbox,
@@ -186,6 +216,7 @@ export default {
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   .dailyTask-wrapper {
+    position: relative
     /*height: 100%*/
     .query-bar {
       /*height: 50px*/
@@ -208,7 +239,90 @@ export default {
           padding-left: 1.4em
         }
       }
+    }
 
+    .mp-input-combination {
+      display: block;
+      .mp-input-project-name {
+        width: 230px;
+      }
+      .mp-input-project-task {
+        width: 160px;
+      }
+      .mp-input-task-details {
+        width: calc(100% - 485px);
+        height: 40px;
+        resize: none;
+      }
+    }
+
+    /* 动画效果 */
+    .edit-panel-enter-active, .edit-panel-leave-active {
+      transition: left .5s ease-in-out;
+    }
+    .edit-panel-enter, .edit-panel-leave-to {
+      left: 100%;
+    }
+    .edit-panel-title-enter-active {
+      transition: top .5s ease-in-out, z-index .4s ease-in-out .1s;
+    }
+    .edit-panel-title-leave-active {
+      z-index: 0;
+      transition: top .4s ease-in-out .1s, z-index .5s ease-in-out;
+    }
+    .edit-panel-title-enter, .edit-panel-title-leave-to {
+      top: 0;
+      z-index: -1;
+    }
+  }
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+  .btn-return {
+  }
+  .edit-panel {
+    position: absolute
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px);
+    padding: 15px
+    padding-bottom: 85px;
+    background-color: #ffffff;
+    /*transition: left .4s ease-in-out;*/
+    .edit-panel-title {
+      position: absolute
+      top: -50px;
+      left: 0
+      width: 100%;
+      height: 49px;
+      padding: 0
+      font-size: 28px;
+      text-align: center;
+      background-color: #ffffff;
+      z-index: 1;
+      /*transition: top .3s ease-in-out .4s, z-index .3s ease-in-out .4s;*/
+      .btn-return {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 49px;
+        border-right: 1px solid #cccccc;
+        font-size: 24px;
+        line-height: 50px;
+        transition: border-right-color .5s ease-in-out .4s
+      }
+    }
+    .edit-panel-body {
+      height: 100%;
+    }
+    .edit-panel-footer {
+      position: absolute
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 70px;
+      border-top: 1px solid #cccccc;
     }
   }
 </style>

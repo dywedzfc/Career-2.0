@@ -74,6 +74,10 @@ export default {
     }
   }
 
+  .ant-input-group-lg .ant-select-selection__rendered {
+    line-height: 40px;
+  }
+
   button, html [type="button"], [type="reset"], [type="submit"] {
     -webkit-appearance: none;
   }

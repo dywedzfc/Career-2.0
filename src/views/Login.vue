@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import LoginBox from 'module/LoginBox'
+import LoginBox from 'components/LoginBox'
 export default {
   name: 'Login',
   data () {

@@ -16,7 +16,7 @@
 
 <script>
 import {Layout, Icon} from 'ant-design-vue'
-import MenuNav from 'module/MenuNav'
+import MenuNav from 'components/MenuNav'
 export default {
   name: 'Index',
   data () {
@@ -73,8 +73,8 @@ export default {
     [Layout.Header.name]: Layout.Header,
     [Layout.Sider.name]: Layout.Sider,
     [Layout.Content.name]: Layout.Content,
-    [MenuNav.name]: MenuNav,
-    [Icon.name]: Icon
+    [Icon.name]: Icon,
+    MenuNav
   }
 }
 </script>
